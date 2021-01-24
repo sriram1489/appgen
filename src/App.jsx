@@ -1,43 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { loadInitDataThunkAction } from './redux/generic';
 
-class App extends React.PureComponent {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: []
-    }
-  }
+function App(props) {
+  const [data, setData] = useState([]);
 
+  useEffect(() => {
+    props.loadInitDataThunkAction();
+    const dataMock = JSON.parse(JSON.stringify(props.data));
+    setData(dataMock);
+  });
 
-  async componentWillMount() {
-    const { loadInitDataThunkAction } = this.props;
-    await loadInitDataThunkAction();
-    await this.loadDataToState();
-  }
+  return (
+    <div>
+      <ul>
+        {data.map((entry) =>
+          <li>{entry.name}</li>
+        )}
+      </ul>
+    </div>
+  );
 
-  loadDataToState = async () => {
-    const { data } = this.props;
-    const dataMock = JSON.parse(JSON.stringify(data));
-    this.setState({ data: dataMock });
-  }
-
-  render() {
-    const { data } = this.state;
-    return (
-
-      <div>
-        <ul>
-          {data.map((entry) =>
-            <li>{entry.name}</li>
-          )}
-        </ul>
-
-      </div>
-
-    )
-  }
 }
 
 const mapStateToProps = (state) => ({
